@@ -36,30 +36,37 @@ npm run preview  # 書き出した結果をローカルで確認
 
 ---
 
-## GitHub（GitHub Pages）で公開する
+## 公開する（GitHub〈非公開〉＋ Cloudflare Pages）
 
-このリポジトリには GitHub Pages 用の自動公開設定（`.github/workflows/deploy.yml`）が入っています。
+リポジトリを **非公開（Private）** のまま、Cloudflare Pages で無料公開できます。
 
-1. GitHub で新しいリポジトリを作成します。
-2. このフォルダを push します。
+### 1. GitHub に「非公開」リポジトリを作って push する
 
-   ```bash
-   git remote add origin https://github.com/<あなたのユーザー名>/<リポジトリ名>.git
-   git branch -M main
-   git push -u origin main
-   ```
+GitHub で **Private** のリポジトリを新規作成し、このフォルダを push します。
 
-3. GitHub のリポジトリで **Settings → Pages → Build and deployment → Source** を
-   **「GitHub Actions」** に設定します。
+```bash
+git remote add origin https://github.com/<あなたのユーザー名>/<リポジトリ名>.git
+git branch -M main
+git push -u origin main
+```
 
-これで、以降は `main` に push するたびに自動でビルドされ、
-`https://<あなたのユーザー名>.github.io/<リポジトリ名>/` で公開されます。
+> ⚠️ リポジトリは必ず **Private（非公開）** で作成してください。
 
-> ⚠️ **公開リポジトリについての注意**：GitHub の無料プランでは、GitHub Pages は
-> **公開（Public）リポジトリ** でないと使えません（非公開で使うには有料プランが必要です）。
-> このアプリは個人情報やパスワードを一切扱わず、外部送信もしないため公開しても情報漏えいの心配は
-> ありませんが、社内ルールで「リポジトリは非公開」と決まっている場合は、
-> **Cloudflare Pages**（非公開リポジトリでも無料で公開可）の利用も検討してください。
+### 2. Cloudflare Pages につなぐ
+
+1. [Cloudflare ダッシュボード](https://dash.cloudflare.com/) → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**。
+2. 上で作った GitHub リポジトリを選びます（初回は GitHub との連携許可が必要です）。
+3. ビルド設定を次のようにします。
+   - **Framework preset**: `Vite`
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+4. **Save and Deploy** を押すと公開されます。
+   以降は `main` に push するたびに自動で再公開されます。
+
+公開URLは `https://<プロジェクト名>.pages.dev/` の形になります。
+
+> CLI で直接アップロードする方法もあります（GitHub 連携なしでも可）:
+> `npm run build && npx wrangler pages deploy dist`
 
 ---
 
