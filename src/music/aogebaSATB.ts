@@ -56,11 +56,49 @@ const CHORALE: Array<[number, string, string, string, string]> = [
   [1, "rest", "rest", "rest", "rest"],
 ];
 
+// 各 CHORALE 行に対応する歌詞（全声部共通）。"" は休符＝歌詞の行の区切りに使う。
+// ※歌詞の文字割りは、上の簡易メロディに合わせた一例です（"わが"/"おん" などは1音にまとめています）。
+const LYRICS: string[] = [
+  // 仰げば尊し　我が師の恩
+  "あ",
+  "お",
+  "げ",
+  "ば",
+  "と",
+  "う",
+  "と",
+  "し",
+  "わが",
+  "し",
+  "の",
+  "おん",
+  "", // 休符
+  // 教えの庭にも　はや幾年
+  "お",
+  "し",
+  "え",
+  "の",
+  "に",
+  "わ",
+  "に",
+  "も",
+  "はや",
+  "いく",
+  "とせ",
+  "", // 休符
+];
+
 export interface TimedNote {
   name: string; // 音名（Tone.js 再生用）
   midi: number; // MIDIノート番号（描画用）
   startSec: number; // 開始時刻（秒）
   durSec: number; // 長さ（秒）
+}
+
+export interface LyricChunk {
+  text: string;
+  startSec: number; // 曲頭からの開始時刻（秒）
+  durSec: number;
 }
 
 export interface Part {
@@ -100,3 +138,32 @@ export const AOGEBA_DURATION_SEC = AOGEBA_PARTS.soprano.notes.reduce(
   (max, n) => Math.max(max, n.startSec + n.durSec),
   0,
 );
+
+// 歌詞を「行（休符で区切る）」ごとにまとめ、各文字に開始時刻を付ける。
+function buildLyricLines(
+  chorale: typeof CHORALE,
+  lyrics: string[],
+  bpm: number,
+): LyricChunk[][] {
+  const secPerBeat = 60 / bpm;
+  const lines: LyricChunk[][] = [];
+  let current: LyricChunk[] = [];
+  let cursorSec = 0;
+  chorale.forEach((row, i) => {
+    const durSec = row[0] * secPerBeat;
+    const text = lyrics[i] ?? "";
+    if (text === "") {
+      if (current.length) {
+        lines.push(current);
+        current = [];
+      }
+    } else {
+      current.push({ text, startSec: cursorSec, durSec });
+    }
+    cursorSec += durSec;
+  });
+  if (current.length) lines.push(current);
+  return lines;
+}
+
+export const AOGEBA_LYRIC_LINES = buildLyricLines(CHORALE, LYRICS, TEMPO_BPM);

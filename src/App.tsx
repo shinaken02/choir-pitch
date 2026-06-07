@@ -7,10 +7,12 @@ import {
   type MelodyHandle,
 } from "./audio/tonePlayer";
 import { PitchGraph } from "./components/PitchGraph";
+import { LyricsKaraoke } from "./components/LyricsKaraoke";
 import { type PitchReadout } from "./music/noteUtils";
 import {
   AOGEBA_PARTS,
   AOGEBA_DURATION_SEC,
+  AOGEBA_LYRIC_LINES,
   PART_ORDER,
   type PartId,
 } from "./music/aogebaSATB";
@@ -185,6 +187,17 @@ export default function App() {
           ))}
         </div>
       </section>
+
+      {/* 歌詞（お手本モードのとき。再生に合わせてカラオケ表示） */}
+      {mode === "demo" && (
+        <section className="lyrics-wrap">
+          <LyricsKaraoke
+            lines={AOGEBA_LYRIC_LINES}
+            demoStartRef={demoStartRef}
+            playing={demoPlaying}
+          />
+        </section>
+      )}
 
       {/* グラフ */}
       <section className="graph-wrap">

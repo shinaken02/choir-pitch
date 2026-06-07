@@ -146,6 +146,41 @@ body {
   font-weight: 700;
 }
 
+/* 歌詞（カラオケ表示） */
+.lyrics-wrap {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+.lyrics {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lyric-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  letter-spacing: 1px;
+}
+.syllable {
+  color: var(--muted);
+  padding: 0 2px;
+  border-radius: 4px;
+  transition: color 0.12s, background 0.12s;
+}
+.syllable.past {
+  color: var(--text);
+}
+.syllable.active {
+  color: #03121f;
+  background: var(--green);
+  font-weight: 700;
+}
+
 /* グラフ */
 .graph-wrap {
   position: relative;
